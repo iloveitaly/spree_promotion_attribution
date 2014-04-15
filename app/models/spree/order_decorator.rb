@@ -1,7 +1,8 @@
 Spree::Order.class_eval do
 
   def with_promotion_attribution
-    promotions = self.adjustments.eligible.promotion
+    order_copy = Spree::Order.find(self.id)
+    promotions = order_copy.adjustments.eligible.promotion
 
     # right now only one promotion can exist per order; this might change in the future
 
@@ -14,9 +15,9 @@ Spree::Order.class_eval do
         # TODO this is the ugliest hack ever; there has to be a better way to set
         #      the line items without overriding all of them
         
-        attributed_line_items = promotion_calculator.report(self)
+        attributed_line_items = promotion_calculator.report(order_copy)
 
-        self.instance_eval do
+        order_copy.instance_eval do
           @promotion_attributed_line_items = attributed_line_items
 
           def line_items
@@ -24,11 +25,11 @@ Spree::Order.class_eval do
           end
         end
 
-        self.adjustments.reject! {|a| a == promotion }
+        order_copy.adjustments.reject! {|a| a == promotion }
       end
     end
 
-    self
+    order_copy
   end
 
 end
