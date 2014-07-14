@@ -27,4 +27,4 @@ Spree::Calculator::NToYProductsXOff.class_eval do
     line_items_copy
   end
   
-end
+end if defined?(Spree::Calculator::NToYProductsXOff)

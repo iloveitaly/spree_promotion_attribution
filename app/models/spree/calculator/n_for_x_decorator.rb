@@ -23,4 +23,4 @@ Spree::Calculator::NForX.class_eval do
     end
   end
 
-end
+end if defined?(Spree::Calculator::NForX)
