@@ -23,6 +23,17 @@ Spree::Order.class_eval do
           def line_items
             @promotion_attributed_line_items
           end
+
+          # this is highly dependent on only one promotion existing per order
+          # https://github.com/spree/spree/blob/1-3-stable/promo/app/models/spree/order_decorator.rb#L13
+          def promo_total
+            0.0
+          end
+
+          # item_total is a field on the order model; override to calculate based on modified line items
+          def item_total
+            @promotion_attributed_line_items.map(&:amount).sum
+          end
         end
 
         order_copy.adjustments.reject! {|a| a == promotion }
